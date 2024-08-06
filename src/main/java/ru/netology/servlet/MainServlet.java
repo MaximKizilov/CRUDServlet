@@ -10,6 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 
 public class MainServlet extends HttpServlet {
   private PostController controller;
+  static private final String GET_METHOD = "GET";
+  static private final String POST_METHOD = "POST";
+  static private final String DELETE_METHOD = "DELETE";
+  private final String API_POSTS = "/api/posts";
+  private final String API_POSTS_D = "/api/posts/\\d+";
 
   @Override
   public void init() {
@@ -25,24 +30,22 @@ public class MainServlet extends HttpServlet {
       final var path = req.getRequestURI();
       final var method = req.getMethod();
       // primitive routing
-      if (method.equals("GET") && path.equals("/api/posts")) {
+      if (method.equals(GET_METHOD) && path.equals(API_POSTS)) {
         controller.all(resp);
         return;
       }
-      if (method.equals("GET") && path.matches("/api/posts/\\d+")) {
+      if (method.equals(GET_METHOD) && path.matches(API_POSTS_D)) {
         // easy way
-        final var id = Long.parseLong(path.substring(path.lastIndexOf("/")));
-        controller.getById(id, resp);
+        controller.getById(receivedId(path), resp);
         return;
       }
-      if (method.equals("POST") && path.equals("/api/posts")) {
+      if (method.equals(POST_METHOD) && path.equals(API_POSTS)) {
         controller.save(req.getReader(), resp);
         return;
       }
-      if (method.equals("DELETE") && path.matches("/api/posts/\\d+")) {
+      if (method.equals(DELETE_METHOD) && path.matches(API_POSTS_D)) {
         // easy way
-        final var id = Long.parseLong(path.substring(path.lastIndexOf("/")));
-        controller.removeById(id, resp);
+        controller.removeById(receivedId(path), resp);
         return;
       }
       resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -50,6 +53,9 @@ public class MainServlet extends HttpServlet {
       e.printStackTrace();
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
+  }
+  public long receivedId(String path) {
+    return Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
   }
 }
 
