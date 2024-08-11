@@ -21,6 +21,7 @@ public class MainServlet extends HttpServlet {
   @Override
   public void init() {
     final var context = new AnnotationConfigApplicationContext(JavaConfig.class);
+    //без явного приведения типа не работает, в лекции вроде работало, программа работает
     controller = (PostController) context.getBean("postController");
   }
 
