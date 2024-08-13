@@ -20,7 +20,7 @@ public class MainServlet extends HttpServlet {
   @Override
   public void init() {
     //Почему то при указании "ru.netology" в качестве параметра при гет запросе томкат выдет исключения, поэтоиму пришлось указывать классы
-    final var context = new AnnotationConfigApplicationContext(PostController.class, PostService.class, PostRepository.class);
+    final var context = new AnnotationConfigApplicationContext("ru.netology");
     controller = context.getBean(PostController.class);
   }
 
